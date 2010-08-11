@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+usage() {
+  echo <<-END
+Usage:
+  $0 NAME
+END
+}
+
+if [[ -z $1 ]]; then
+  echo "NAME missing"
+  usage
+  exit 1
+fi
+
+VBoxManage setextradata -q "$1" VBoxInternal/Devices/e1000/0/LUN\#0/Config/sshd/Protocol TCP
+VBoxManage setextradata -q "$1" VBoxInternal/Devices/e1000/0/LUN\#0/Config/sshd/GuestPort 22
+VBoxManage setextradata -q "$1" VBoxInternal/Devices/e1000/0/LUN\#0/Config/sshd/HostPort 2222
