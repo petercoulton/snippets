@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+usage() {
+  echo <<-END
+Usage:
+  git clean-branch NAME"
+END
+}
+
+if [[ -z $1  ]]; then
+  echo "NAME missing"
+  usage
+  exit 1
+fi
+
+if [[ ! -d ".git" ]]; then
+  echo "Not in the root of a git repository"
+  exit 1
+fi
+
+git symbolic-ref HEAD refs/heads/$1
+rm .git/index 
+git clean -fdx 
+
+
