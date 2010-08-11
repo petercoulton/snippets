@@ -3,7 +3,7 @@
 usage() {
   echo <<-END
 Usage:
-  git clean-branch NAME"
+  git clean-branch NAME
 END
 }
 
