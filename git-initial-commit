@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ -d .git ] ; then 
+  touch README.markdown .gitignore 
+  ln -s README.markdown README 
+  git add README README.markdown .gitignore 
+  git commit -m 'Initial Commit'
+else
+  echo "Must be in the root of a git repository"
+fi
+
