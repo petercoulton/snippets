@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+level=100
+if [ $# -gt 0 ]; then
+  level=$1
+fi
+
+
+sudo bash -c "echo -n $level > /proc/acpi/video/DGFX/LCD/brightness"
+
