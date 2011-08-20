@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-puts ARGV[0].chars.map(&:to_i).inject(0) { |p, n| p + (n*n) }
+puts ARGV[0].chars.map(&:to_i).reduce(0) { |p, n| p + (n*n) }
 
