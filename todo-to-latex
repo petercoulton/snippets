@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+doc=''
+doc+='\documentclass[a4paper,8pt]{article}\n'
+doc+='\\begin{document}\n'
+
+echo "Starting"
+
+for i in $(t ls | grep --only-matching @[^\ ]* | sort | uniq)
+do
+  echo "  Doing $i"
+
+  doc+="\section{${i/\&/\\&}}\n"
+  doc+='\\begin{samepage}\n'
+  doc+='  \\begin{itemize}\n'
+
+
+  IFS=$'\n'
+  for t in $(t ls $i | sed 's/\([^ ]\+\ \)\{2\}//'i | sed 'N;$!P;$!D;$d')
+  do
+    doc+="    \item{${t/\&/\\&}}\n"
+  done
+
+  doc+='  \\end{itemize}\n'
+  doc+='\\end{samepage}\n\n'
+done
+
+echo "Done"
+
+doc+='\\end{document}\n'
+
+echo -e $doc > /tmp/todo.tex
+
+cd /tmp 
+
+echo -ne "Printing to PDF..."
+
+pdflatex /tmp/todo.tex > /dev/null 2>&1
+
+echo "done"
+
+cd - > /dev/null 2>&1 
+
+cp /tmp/todo.pdf .
+
