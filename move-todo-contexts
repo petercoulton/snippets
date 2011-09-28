@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+file='/home/peter/Dropbox/todo/todo.txt'
+
+cat /dev/null > /tmp/todo.tmp
+
+cat $file | while read line
+do
+  context=''
+  todo=''
+  for word in $line
+  do
+    if [[ $word =~ ^@ ]]
+    then
+      context+=" $word"
+    else
+      todo+=" $word"
+    fi
+  done
+
+  echo $todo$context >> /tmp/todo.tmp
+done
+
+cp /home/peter/Dropbox/todo/todo.{txt,bak.context}
+cp /tmp/todo.tmp /home/peter/Dropbox/todo/todo.txt
+
+
