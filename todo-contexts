@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+list="todo.txt"
+
+if [ "$@" ]; then
+  list=$1
+  if [[ ! $list =~ txt$ ]]; then
+    list+='.txt'
+  fi
+fi
+
+\t lf $list | grep -o \ @[^\ ]* | sort | uniq
