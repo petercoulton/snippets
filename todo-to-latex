@@ -1,45 +1,106 @@
-#!/usr/bin/env bash
-
-doc=''
-doc+='\documentclass[a4paper,8pt]{article}\n'
-doc+='\\begin{document}\n'
-
-echo "Starting"
-
-for i in $(t ls | grep --only-matching @[^\ ]* | sort | uniq)
-do
-  echo "  Doing $i"
-
-  doc+="\section{${i/\&/\\&}}\n"
-  doc+='\\begin{samepage}\n'
-  doc+='  \\begin{itemize}\n'
+#!/usr/bin/env ruby
 
 
-  IFS=$'\n'
-  for t in $(t ls $i | sed 's/\([^ ]\+\ \)\{2\}//'i | sed 'N;$!P;$!D;$d')
-  do
-    doc+="    \item{${t/\&/\\&}}\n"
-  done
 
-  doc+='  \\end{itemize}\n'
-  doc+='\\end{samepage}\n\n'
-done
+class Todos
+  def initialize todo_list
+    @todo_list = parse_todos todo_list 
+  end
 
-echo "Done"
+  def parse_todos todos
+    todos.split("\n")[0..-3]
+  end
 
-doc+='\\end{document}\n'
+  def todos
+    @todo_list
+  end
 
-echo -e $doc > /tmp/todo.tex
+  def contexts
+    @todo_list.join("\n").scan /@[^\ ]*/
+  end
 
-cd /tmp 
+  def projects
+    @todo_list.join("\n").scan(/\+[^\ ]*/).uniq
+  end
+end
 
-echo -ne "Printing to PDF..."
+txt="01 2011-09-28 Do something @test @poop +test +poop +poop
+--
+todo: 1 of 1 tasks shown"
 
-pdflatex /tmp/todo.tex > /dev/null 2>&1
+todos=Todos.new(txt)
 
-echo "done"
+print "Todos => "
+puts todos.todos.inspect
 
-cd - > /dev/null 2>&1 
+print "Project => "
+puts todos.projects.inspect
 
-cp /tmp/todo.pdf .
+print "Contexts => "
+puts todos.contexts.inspect
 
+puts todos.poop
+
+#todos=`\\t ls`.lines.to_a[0..-3].map {|t| t.split(' ')[2..-1].join(' ') }
+#p todos
+#puts todos
+
+
+
+#document=<<LATEX
+#\documentclass[a4paper,10pt]{article}
+#\usepackage[a4paper,top=1cm,left=1cm,right=1cm,bottom=1cm]{geometry}
+#\begin{document}
+#\begin{itemize}
+#
+#\item Start to build a weekly menu with Jo {\bf @jo +fitness @home @food}
+#
+#\end{itemize}
+#\end{document}
+#LATEX
+#
+#puts document
+#
+#doc=''
+#doc+='\documentclass[a4paper,8pt]{article}\n'
+#doc+='\\begin{document}\n'
+#
+#echo "Starting"
+#
+#for i in $(t ls | grep --only-matching @[^\ ]* | sort | uniq)
+#do
+#  echo "  Doing $i"
+#
+#  doc+="\section{${i/\&/\\&}}\n"
+#  doc+='\\begin{samepage}\n'
+#  doc+='  \\begin{itemize}\n'
+#
+#
+#  IFS=$'\n'
+#  for t in $(t ls $i | sed 's/\([^ ]\+\ \)\{2\}//'i | sed 'N;$!P;$!D;$d')
+#  do
+#    doc+="    \item{${t/\&/\\&}}\n"
+#  done
+#
+#  doc+='  \\end{itemize}\n'
+#  doc+='\\end{samepage}\n\n'
+#done
+#
+#echo "Done"
+#
+#doc+='\\end{document}\n'
+#
+#echo -e $doc > /tmp/todo.tex
+#
+#cd /tmp 
+#
+#echo -ne "Printing to PDF..."
+#
+#pdflatex /tmp/todo.tex > /dev/null 2>&1
+#
+#echo "done"
+#
+#cd - > /dev/null 2>&1 
+#
+#cp /tmp/todo.pdf .
+#
